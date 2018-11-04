@@ -69,7 +69,7 @@ while True:
         y_pred = sess.run(tf.argmax(logits,1), feed_dict={X:mfcc_data})
         from sklearn.metrics import accuracy_score
         result = (accuracy_score(1, y_pred)*100)%100
-	print("result : ", result) 
+        print("result : ", result)
         ### send packet
 
     # exception handle
