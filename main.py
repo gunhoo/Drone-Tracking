@@ -19,6 +19,10 @@ CHUNK = 8192
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
+N_MFCC = 16
+N_FRAME = 16
+N_UNIQ_LABELS = 2
+
 # Socket Variables
 #ADDRESS = '192.168.0.2'
 #PORT = 21535
@@ -40,8 +44,9 @@ def saver(frames):
     wf.setframerate(RATE)
     wf.writeframes(b''.join(frames))
     wf.close()
-def mfcc4(raw, chunck_size=8192, window_size=4096, sr=RATE, n_mfcc=16, n_frame=16):
+def mfcc4(raw, label, chunck_size=8192, window_size=4096, sr=RATE, n_mfcc=16, n_frame=16):
     mfcc = np.empty((0, n_mfcc, n_frame))
+    y = []
     for i in range(0, len(raw), chunck_size//2):
         mfcc_slice = librosa.feature.mfcc(raw[i:i+chunck_size], sr=sr, n_mfcc=n_mfcc)
         if mfcc_slice.shape[1] < 17:
@@ -49,7 +54,29 @@ def mfcc4(raw, chunck_size=8192, window_size=4096, sr=RATE, n_mfcc=16, n_frame=1
         mfcc_slice = mfcc_slice[:,:-1]
         mfcc_slice = mfcc_slice.reshape((1, mfcc_slice.shape[0], mfcc_slice.shape[1]))
         mfcc = np.vstack((mfcc, mfcc_slice))
+        y.append(label)
+    y = np.array(y)
     return mfcc
+def conv(X, Y):
+    # first CNN layer
+    conv1 = tf.layers.conv2d(inputs=X,
+            filters=1, kernel_size=[3,3],
+            padding="SAME", activation=tf.nn.relu)
+    # pooling
+    pool1 = tf.layers.max_pooling2d(inputs=conv1,
+            pool_size=[2, 2], padding="SAME", strides=2)
+    # second CNN layer
+    conv2 = tf.layers.conv2d(inputs=pool1,
+            filters=1, kernel_size=[3, 3],
+            padding="SAME", activation=tf.nn.relu)
+    # pooling
+    pool2 = tf.layers.max_pooling2d(inputs=conv2,
+            pool_size=[2, 2], padding="SAME", strides=2)
+
+    flat = tf.reshape(pool2, [-1, 16*16*1])
+    dense2 = tf.layers.dense(inputs=flat, units=625, activation=tf.nn.relu)
+    logits = tf.layers.dense(inputs=dense2, units=2)
+    return logits
 ###############################
 
 # connection
@@ -89,9 +116,21 @@ while True:
         files = glob.glob(path)
         raw_data = load(files)
         # pre-processing
-        mfcc_data = mfcc4(raw_data)
+        mfcc_data, y = mfcc4(raw_data, 1)
         X = np.concatenate(mfcc_data, axis=0)
-        ### input data into model
+        y = np.hstack(y)
+        n_labels = y.shape[0]
+        y_encoded = np.zeros((n_labels, N_UNIQ_LABLES))
+        y_encoded[np.arange(n_labels),y] = 1
+	# frames 파일 처리 해야하나?
+        X = tf.placeholder(tf.float32, shape=[None, N_MFCC*N_FRAME*CHANNELS])
+        X = tf.reshape(X, [-1, N_MFCC, N_FRAME, CHANNELS])
+        Y = tf.placeholder(tf.float32, shape=[None, N_UNIQ_LABELS])
+        # CNN
+        logits = conv(X, Y)
+        # cost optimizer
+        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
+        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
         # model saver
         sess = tf.Session()
         saver = tf.train.Saver()
