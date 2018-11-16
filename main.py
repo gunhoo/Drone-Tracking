@@ -22,7 +22,7 @@ RATE = 44100
 N_MFCC = 16
 N_FRAME = 16
 N_UNIQ_LABELS = 2
-
+LEARNING_RATE = 0.001
 # Socket Variables
 #ADDRESS = '192.168.0.2'
 #PORT = 21535
@@ -56,7 +56,7 @@ def mfcc4(raw, label, chunck_size=8192, window_size=4096, sr=RATE, n_mfcc=16, n_
         mfcc = np.vstack((mfcc, mfcc_slice))
         y.append(label)
     y = np.array(y)
-    return mfcc
+    return mfcc, y
 def conv(X, Y):
     # first CNN layer
     conv1 = tf.layers.conv2d(inputs=X,
@@ -93,8 +93,9 @@ stream = p.open(format = FORMAT,
         rate = RATE,
         input = True,
         frames_per_buffer = CHUNK,
-        input_device_index = 0,
-        output_device_index = 0)
+        #input_device_index = 0,
+        #output_device_index = 0)
+        )
 
 # start loop
 print("Start recording...")
@@ -118,11 +119,11 @@ while True:
         # pre-processing
         mfcc_data, y = mfcc4(raw_data, 1)
         X = np.concatenate(mfcc_data, axis=0)
+        #X_input = X.reshape(X, [-1, N_MFCC, N_FRAME, CHANNELS])
         y = np.hstack(y)
         n_labels = y.shape[0]
-        y_encoded = np.zeros((n_labels, N_UNIQ_LABLES))
+        y_encoded = np.zeros((n_labels, N_UNIQ_LABELS))
         y_encoded[np.arange(n_labels),y] = 1
-	# frames 파일 처리 해야하나?
         X = tf.placeholder(tf.float32, shape=[None, N_MFCC*N_FRAME*CHANNELS])
         X = tf.reshape(X, [-1, N_MFCC, N_FRAME, CHANNELS])
         Y = tf.placeholder(tf.float32, shape=[None, N_UNIQ_LABELS])
@@ -130,13 +131,13 @@ while True:
         logits = conv(X, Y)
         # cost optimizer
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
-        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+        optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
         # model saver
         sess = tf.Session()
-        saver = tf.train.Saver()
+        saver = tf.train.import_meta_graph('./model/model.meta')
         saver.restore(sess, './model/model')
         # prediction
-        y_pred = sess.run(tf.argmax(logits,1), feed_dict={X:mfcc_data})
+        y_pred = sess.run(tf.argmax(logits,1), feed_dict={X:X})
         from sklearn.metrics import accuracy_score
         result = (accuracy_score(1, y_pred)*100)%100
         print("result : ", result)
