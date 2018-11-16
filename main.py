@@ -13,6 +13,7 @@ if len(sys.argv) < 2:
     print("Compile error : please input node number ")
     exit(1)
 
+FORMAT = pyaudio.paInt16
 # connection
 #clientSocket = socket(AF_INET, SOCK_DGRAM)
 #clientSocket.bind((ADDRESS, PORT))
@@ -46,7 +47,7 @@ while True:
             data = stream.read(CHUNK)
             frames.append(data)
         # save stream data
-        saver(frames)
+        saver(frames, wave, p)
         # load wav file
         files = glob.glob(path)
         raw_data = load(files)

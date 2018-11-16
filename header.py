@@ -1,9 +1,13 @@
+import pyaudio
+import librosa
+import numpy as np
+import tensorflow as tf
 ########## Variables ##########
 # Recording Variables
 RECORD_SECONDS = 1
 CHUNK = 8192
-FORMAT = pyaudio.paInt16
 CHANNELS = 1
+FORMAT = pyaudio.paInt16
 RATE = 44100
 N_MFCC = 16
 N_FRAME = 16
@@ -23,7 +27,7 @@ def load(frames, sr=RATE):
         [array, sr] = librosa.load(f, sr=sr)
         raw = np.hstack((raw, array))
     return raw
-def saver(frames):
+def saver(frames, wave, p):
     wf = wave.open('second.wav', 'wb')
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
