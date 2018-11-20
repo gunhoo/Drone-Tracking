@@ -44,7 +44,7 @@ while True:
         frames = []
         # recording
         for i in range(0, int(RATE/CHUNK*RECORD_SECONDS)):
-            data = stream.read(CHUNK)
+            data = stream.read(CHUNK, exception_on_overflow=False)
             frames.append(data)
         # save stream data
         saver(frames, wave, p)
