@@ -35,11 +35,12 @@ stream = p.open(format = FORMAT,
 
 # start loop
 print("Start recording...")
-sess = tf.Session()
 while True:
     try:
         # initailize values
+        sess = tf.Session()
         init = tf.global_variables_initializer()
+        tf.reset_default_graph()
         sess.run(init)
         frames = []
         # recording

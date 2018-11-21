@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 ########## Variables ##########
 # Recording Variables
-RECORD_SECONDS = 2
+RECORD_SECONDS = 1
 CHUNK = 8192
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
