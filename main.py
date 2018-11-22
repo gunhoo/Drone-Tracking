@@ -2,7 +2,7 @@ import glob
 import sys
 import pyaudio
 import wave
-import time
+from datetime import datetime
 import numpy as np
 import tensorflow as tf
 import librosa
@@ -29,10 +29,6 @@ stream = p.open(format = FORMAT,
                 #output_device_index = 0)
                 )
 
-#sess_saver = tf.Session()
-#saver = tf.train.import_meta_graph('./model/CNN/cnn_model.meta')
-#saver.restore(sess_saver, tf.train.latest_checkpoint('./model/CNN/'))
-
 # start loop
 print("Start recording...")
 while True:
@@ -54,7 +50,6 @@ while True:
         raw_data = load(files)
         # pre-processing
         mfcc_data, y = mfcc4(raw_data, 1)
-        #mfcc_back, y = mfcc4(background_data,o)
         X = np.concatenate((mfcc_data), axis=0)
         X_input = X.reshape(-1,16,16,1)
         y = np.hstack(y)
@@ -78,7 +73,9 @@ while True:
         y_true = sess.run(tf.argmax(y_encoded,1))
         from sklearn.metrics import accuracy_score
         result = (accuracy_score(y_true, y_pred)*100)%100
-        print("result : ", result)
+        now = datetime.now()
+        time = "%02d:%02d:%02d" %(now.hour, now.minute, now.second)
+        print("time: ", time, "result: ", result)
         ### send packet
 
     # exception handle
