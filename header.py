@@ -47,7 +47,7 @@ def mfcc4(raw, label, chunck_size=8192, window_size=4096, sr=RATE, n_mfcc=16, n_
         y.append(label)
     y = np.array(y)
     return mfcc, y
-def conv(X, Y):
+def conv(X):
     # first CNN layer
     conv1 = tf.layers.conv2d(inputs=X,
             filters=1, kernel_size=[3,3],
