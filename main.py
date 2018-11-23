@@ -2,7 +2,7 @@ import glob
 import sys
 import pyaudio
 import wave
-import time
+from datetime import datetime
 import numpy as np
 import tensorflow as tf
 import librosa
@@ -21,25 +21,22 @@ FORMAT = pyaudio.paInt16
 # clinetSocket.send(.encode())
 
 p = pyaudio.PyAudio()
-
-# open pyaudio
 stream = p.open(format = FORMAT,
-        channels = CHANNELS,
-        rate = RATE,
-        input = True,
-        frames_per_buffer = CHUNK,
-        #input_device_index = 0,
-        #output_device_index = 0)
-        )
+                channels = CHANNELS,
+                rate = RATE,
+                input = True,frames_per_buffer = CHUNK,
+                #input_device_index = 0,
+                #output_device_index = 0)
+                )
 
 # start loop
 print("Start recording...")
-sess = tf.Session()
 while True:
-    try:#
+    try:
         # initailize values
-        
+        sess = tf.Session()
         init = tf.global_variables_initializer()
+        tf.reset_default_graph()
         sess.run(init)
         frames = []
         # recording
@@ -47,14 +44,14 @@ while True:
             data = stream.read(CHUNK, exception_on_overflow=False)
             frames.append(data)
         # save stream data
-        saver(frames, wave, p)
+        file_saver(frames, wave, p)
         # load wav file
         files = glob.glob(path)
         raw_data = load(files)
         # pre-processing
         mfcc_data, y = mfcc4(raw_data, 1)
-        X = np.concatenate(mfcc_data, axis=0)
-        #X_input = X.reshape(X, [-1, N_MFCC, N_FRAME, CHANNELS])
+        X = np.concatenate((mfcc_data), axis=0)
+        X_input = X.reshape(-1,16,16,1)
         y = np.hstack(y)
         n_labels = y.shape[0]
         y_encoded = np.zeros((n_labels, N_UNIQ_LABELS))
@@ -69,13 +66,16 @@ while True:
         optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
         # model saver
         sess = tf.Session()
-        saver = tf.train.import_meta_graph('./model/model.meta')
-        saver.restore(sess, './model/model')
+        saver = tf.train.Saver()
+        saver.restore(sess, './model/CNN/cnn_model')
         # prediction
-        y_pred = sess.run(tf.argmax(logits,1), feed_dict={X:X})
+        y_pred = sess.run(tf.argmax(logits,1), feed_dict={X:X_input})
+        y_true = sess.run(tf.argmax(y_encoded,1))
         from sklearn.metrics import accuracy_score
-        result = (accuracy_score(1, y_pred)*100)%100
-        print("result : ", result)
+        result = (accuracy_score(y_true, y_pred)*100)%100
+        now = datetime.now()
+        time = "%02d:%02d:%02d" %(now.hour, now.minute, now.second)
+        print("time: ", time, "result: ", result)
         ### send packet
 
     # exception handle
@@ -86,5 +86,3 @@ while True:
 stream.stop_stream()
 stream.close()
 p.terminate()
-
-

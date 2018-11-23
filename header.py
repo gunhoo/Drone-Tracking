@@ -27,7 +27,7 @@ def load(frames, sr=RATE):
         [array, sr] = librosa.load(f, sr=sr)
         raw = np.hstack((raw, array))
     return raw
-def saver(frames, wave, p):
+def file_saver(frames, wave, p):
     wf = wave.open('second.wav', 'wb')
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
@@ -54,14 +54,14 @@ def conv(X, Y):
             padding="SAME", activation=tf.nn.relu)
     # pooling
     pool1 = tf.layers.max_pooling2d(inputs=conv1,
-            pool_size=[2, 2], padding="SAME", strides=2)
+            pool_size=[2, 2], padding="SAME", strides=1)
     # second CNN layer
     conv2 = tf.layers.conv2d(inputs=pool1,
             filters=1, kernel_size=[3, 3],
             padding="SAME", activation=tf.nn.relu)
     # pooling
     pool2 = tf.layers.max_pooling2d(inputs=conv2,
-            pool_size=[2, 2], padding="SAME", strides=2)
+            pool_size=[2, 2], padding="SAME", strides=1)
 
     flat = tf.reshape(pool2, [-1, 16*16*1])
     dense2 = tf.layers.dense(inputs=flat, units=625, activation=tf.nn.relu)
