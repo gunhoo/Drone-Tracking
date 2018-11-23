@@ -8,7 +8,7 @@ if (len(sys.argv) < 3):
 
 WAVE_OUTPUT_FILENAME = sys.argv[2]
 RECORD_SECONDS = int(sys.argv[1])
-CHUNK = 1024
+CHUNK = 8192
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
@@ -20,14 +20,15 @@ stream = p.open(format = FORMAT,
                 rate = RATE,
                 input = True,
                 frames_per_buffer = CHUNK,
-                input_device_index=0)
+                #input_device_index=0)
+                )
 
 print("start to record the audio.")
 
 frames = []
 
 for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-    data = stream.read(CHUNK)
+    data = stream.read(CHUNK, exception_on_overflow=False)
     frames.append(data)
     
 print("Recording finished.")

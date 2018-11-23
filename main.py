@@ -90,7 +90,7 @@ while True:
         y_pred = sess.run(tf.argmax(logits,1), feed_dict={X:X_input})
         #y_true = sess.run(tf.argmax(y_encoded,1))
         from sklearn.metrics import accuracy_score
-        result = (accuracy_score(y, y_pred)*100)%100
+        result = "%2.2f" %((accuracy_score(y, y_pred)*100)%100)
         now = datetime.now()
         time = "%02d:%02d:%02d" %(now.hour, now.minute, now.second)
         print("time: ", time, "result: ", result)
