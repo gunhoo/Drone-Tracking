@@ -48,19 +48,19 @@ while True:
             frames.append(data)
         # save stream data
         now = datetime.now()
-        time = "%02d:%02d:%02d" %(now.hour, now.minute, now.second)
+        time = now.strftime('%H:%M:%S:%f')
         print("record", time)
         file_saver(frames, wave, p)
         # load wav file
         files = glob.glob(path)
         raw_data = load(files)
         now = datetime.now()
-        time = "%02d:%02d:%02d" %(now.hour, now.minute, now.second)
+        time = now.strftime('%H:%M:%S:%f')
         print("I/O",time)
         # pre-processing
         mfcc_data, y = mfcc4(raw_data, 1)
         now = datetime.now()
-        time = "%02d:%02d:%02d" %(now.hour, now.minute, now.second)
+        time = now.strftime('%H:%M:%S:%f')
         print("mfcc",time)
         X = np.concatenate((mfcc_data), axis=0)
         X_input = X.reshape(-1,N_MFCC,N_FRAME,CHANNELS)
@@ -77,14 +77,14 @@ while True:
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
         optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
         now = datetime.now()
-        time = "%02d:%02d:%02d" %(now.hour, now.minute, now.second)
+        time = now.strftime('%H:%M:%S:%f')
         print("layer",time)
         # model saver
         sess = tf.Session()
         saver = tf.train.Saver()
         saver.restore(sess, './model/CNN/cnn_model')
         now = datetime.now()
-        time = "%02d:%02d:%02d" %(now.hour, now.minute, now.second)
+        time = now.strftime('%H:%M:%S:%f')
         print("model saver",time)
         # prediction
         y_pred = sess.run(tf.argmax(logits,1), feed_dict={X:X_input})
@@ -92,7 +92,7 @@ while True:
         from sklearn.metrics import accuracy_score
         result = "%2.2f" %((accuracy_score(y, y_pred)*100)%100)
         now = datetime.now()
-        time = "%02d:%02d:%02d" %(now.hour, now.minute, now.second)
+        time = now.strftime('%H:%M:%S:%f')
         print("time: ", time, "result: ", result)
         ### send packet
 
