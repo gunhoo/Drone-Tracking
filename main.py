@@ -35,7 +35,7 @@ while True:
     try:
         # initailize values
         now = datetime.now()
-        time = "%02d:%02d:%02d" %(now.hour, now.minute, now.second)
+        time = now.strftime('%H:%M:%S:%f')
         print("init", time)
         sess = tf.Session()
         init = tf.global_variables_initializer()
