@@ -64,7 +64,6 @@ while True:
         print("mfcc",time)
         X = np.concatenate((mfcc_data), axis=0)
         X_input = X.reshape(-1,N_MFCC,N_FRAME,CHANNELS)
-        print(type(X_input))
         y = np.hstack(y)
         n_labels = y.shape[0]
         y_encoded = np.zeros((n_labels, N_UNIQ_LABELS))

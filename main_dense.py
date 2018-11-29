@@ -88,8 +88,7 @@ while True:
         time = now.strftime('%H:%M:%S:%f')
         print("model saver",time)
         # prediction
-        y_pred = sess.run(tf.argmax(logits,1),
-                          feed_dict={X:X_input,keep_prob:1})
+        y_pred = sess.run(tf.argmax(logits,1),feed_dict={X:X_input,keep_prob:1})
         #y_true = sess.run(tf.argmax(y_encoded,1))
         from sklearn.metrics import accuracy_score
         result = "%2.2f" %((accuracy_score(y, y_pred)*100)%100)
