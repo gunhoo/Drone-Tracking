@@ -67,9 +67,7 @@ def conv(X):
     dense2 = tf.layers.dense(inputs=flat, units=625, activation=tf.nn.relu)
     logits = tf.layers.dense(inputs=dense2, units=2)
     return logits
-def dens(X):
-    X = tf.placeholder(tf.float32, shape=[None,N_MFCC*N_FRAME*CHANNELS])
-    keep_prob = tf.placeholder(tf.float32)
+def dens(X, keep_prob):
     dense1 = tf.layers.dense(inputs=X, units=256, activation=tf.nn.relu)
     dropout1 = tf.nn.dropout(dense1, keep_prob=keep_prob)
     dense2 = tf.layers.dense(inputs=dropout1, units=256, activation=tf.nn.relu)
