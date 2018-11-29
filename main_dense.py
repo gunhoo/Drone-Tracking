@@ -63,10 +63,12 @@ while True:
         time = now.strftime('%H:%M:%S:%f')
         print("mfcc",time)
         X = np.concatenate((mfcc_data), axis=0)
-        X = X.reshape(-1,N_MFCC*N_FRAME)
+        X = X.reshape(-1, N_MFCC, N_FRAME, CHANNELS)
         X_input = X.reshape(X.shape[0],-1)
         # dense layer
-        logits = dens(X)
+        X = tf.placeholder(tf.float32, shape=[None,N_MFCC*N_FRAME*CHANNELS])
+        keep_prob = tf.placeholder(tf.float32)
+        logits = dens(X, keep_prob)
         y = np.hstack(y)
         n_labels = y.shape[0]
         y_encoded = np.zeros((n_labels, N_UNIQ_LABELS))
@@ -86,7 +88,7 @@ while True:
         time = now.strftime('%H:%M:%S:%f')
         print("model saver",time)
         # prediction
-        y_pred = sess.run(tf.argmax(logits,1), feed_dict={X:X_input})
+        y_pred = sess.run(tf.argmax(logits,1),feed_dict={X:X_input,keep_prob:1})
         #y_true = sess.run(tf.argmax(y_encoded,1))
         from sklearn.metrics import accuracy_score
         result = "%2.2f" %((accuracy_score(y, y_pred)*100)%100)
