@@ -14,28 +14,27 @@ CHANNELS = 1
 RATE = 44100
 
 p = pyaudio.PyAudio()
+cnt = 0;
+try:
+    stream = p.open(format = FORMAT,
+                    channels = CHANNELS,
+                    rate = RATE,
+                    input = True,
+                    frames_per_buffer = CHUNK
+                    )
 
-stream = p.open(format = FORMAT,
-                channels = CHANNELS,
-                rate = RATE,
-                input = True,
-                frames_per_buffer = CHUNK,
-                #input_device_index=0)
-                )
+    print("start to record the audio.")
 
-print("start to record the audio.")
-
-frames = []
-
-for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-    data = stream.read(CHUNK, exception_on_overflow=False)
-    frames.append(data)
+    frames = []
+    for i in range(0, int(RATE / CHUNK * (RECORD_SECONDS/10))):
+        data = stream.read(CHUNK, exception_on_overflow=False)
+        frames.append(data)
     
-print("Recording finished.")
-
-stream.stop_stream()
-stream.close()
-p.terminate()
+    print("Recording finished.")
+except:
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
 
 wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
 wf.setnchannels(CHANNELS)
