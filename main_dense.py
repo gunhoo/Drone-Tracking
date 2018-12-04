@@ -9,17 +9,21 @@ import librosa
 from socket import *
 from header import *
 
-if len(sys.argv) < 2:
-    print("Compile error : please input node number ")
+if len(sys.argv) < 4:
+    print("Compile error : python main.py [nodeNum] [posX] [posY]")
     exit(1)
 
 FORMAT = pyaudio.paInt16
+NODE = sys.argv[1]
+posX = sys.argv[2]
+posY = sys.argv[3]
 # connection
-#clientSocket = socket(AF_INET, SOCK_DGRAM)
-#clientSocket.bind((ADDRESS, PORT))
-# send node info
-# clinetSocket.send(.encode())
-
+clientSocket = socket(AF_INET, SOCK_STREAM)
+try:
+    clientSocket.connect((ADDRESS,PORT))
+except Exception as e:
+    print('cannot connect to the server;', e)
+    exit()
 p = pyaudio.PyAudio()
 stream = p.open(format = FORMAT,
                 channels = CHANNELS,
@@ -91,12 +95,13 @@ while True:
         y_pred = sess.run(tf.argmax(logits,1),feed_dict={X:X_input,keep_prob:1})
         #y_true = sess.run(tf.argmax(y_encoded,1))
         from sklearn.metrics import accuracy_score
-        result = "%2.2f" %((accuracy_score(y, y_pred)*100)%100)
+        result = "%d" %((accuracy_score(y, y_pred)*100)%100)
         now = datetime.now()
         time = now.strftime('%H:%M:%S:%f')
         print("time: ", time, "result: ", result)
         ### send packet
-
+        message = NODE + ":" + str(result) + ":" + posX + ":" + posY
+        clientSocket.send(message.encode())
     # exception handle
     except KeyboardInterrupt:
         print("wait seconds to terminate...")

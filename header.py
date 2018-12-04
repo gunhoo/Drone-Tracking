@@ -14,9 +14,8 @@ N_FRAME = 16
 N_UNIQ_LABELS = 2
 LEARNING_RATE = 0.0002
 # Socket Variables
-#ADDRESS = '192.168.0.2'
-#PORT = 21535
-#NODE = int(sys.argv[1])
+ADDRESS = '192.168.123.2'
+PORT = 21535
 path = './second.wav'
 ###############################
 
