@@ -102,7 +102,6 @@ while True:
         print("time: ", time, "result: ", result)
         ### send packet
         message = NODE + ":" + str(result) + ":" + posX + ":" + posY
-        print(message)
         clientSocket.send(message.encode())
         now = datetime.now()
         time = now.strftime('%H:%M:%S:%f')
