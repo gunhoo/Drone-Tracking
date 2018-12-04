@@ -24,6 +24,7 @@ try:
 except Exception as e:
     print('cannot connect to the server;', e)
     exit()
+# open pyaudio
 p = pyaudio.PyAudio()
 stream = p.open(format = FORMAT,
                 channels = CHANNELS,
@@ -108,8 +109,8 @@ while True:
     # exception handle
     except KeyboardInterrupt:
         print("wait seconds to terminate...")
+        stream.stop_stream()
+        steram.close()
+        p.terminate()
+        clientSocket.close()
         break
-
-stream.stop_stream()
-stream.close()
-p.terminate()
