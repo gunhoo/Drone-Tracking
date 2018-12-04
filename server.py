@@ -11,7 +11,7 @@ info = []
 posX = []
 posY = []
 for i in range(0,totalNodeNum):
-    info.append(-1)
+    info.append(0)
     posX.append(-1)
     posY.append(-1)
 
