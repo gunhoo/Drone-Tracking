@@ -110,7 +110,7 @@ while True:
     except KeyboardInterrupt:
         print("wait seconds to terminate...")
         stream.stop_stream()
-        steram.close()
+        stream.close()
         p.terminate()
         clientSocket.close()
         break
