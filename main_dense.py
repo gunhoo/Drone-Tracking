@@ -102,6 +102,9 @@ while True:
         ### send packet
         message = NODE + ":" + str(result) + ":" + posX + ":" + posY
         clientSocket.send(message.encode())
+        now = datetime.now()
+        time = now.strftime('%H:%M:%S:%f')
+        print("send socket", time)
     # exception handle
     except KeyboardInterrupt:
         print("wait seconds to terminate...")
