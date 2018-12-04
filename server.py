@@ -37,7 +37,7 @@ class ClientThread(threading.Thread):
             predY = -1
         now = datetime.now()
         time = now.strftime('%H:%M:%S')
-        print(time,": Drone's location: (", predX, ",", predY, ")", "accuracy: ", tmp/totalNodeNum)
+        print(time,": Drone's location: (", predX, ",", predY, ")")
     def run(self):
         global info, posX, posY
         print("Client Address", self.caddr[0], "connected.")
