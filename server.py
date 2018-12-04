@@ -32,6 +32,9 @@ class ClientThread(threading.Thread):
         if tmp != 0:
             predX = predX / tmp
             predY = predY / tmp
+        else:
+            predX = -1
+            predY = -1
         now = datetime.now()
         time = now.strftime('%H:%M:%S')
         print(time,": Drone's location: (", predX, ",", predY, ")", "accuracy: ", tmp/totalNodeNum)
