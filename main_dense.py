@@ -17,6 +17,7 @@ FORMAT = pyaudio.paInt16
 NODE = sys.argv[1]
 posX = sys.argv[2]
 posY = sys.argv[3]
+
 # connection
 clientSocket = socket(AF_INET, SOCK_STREAM)
 try:
@@ -24,6 +25,7 @@ try:
 except Exception as e:
     print('cannot connect to the server;', e)
     exit()
+
 # open pyaudio
 p = pyaudio.PyAudio()
 stream = p.open(format = FORMAT,

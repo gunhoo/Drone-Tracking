@@ -9,17 +9,23 @@ import librosa
 from socket import *
 from header import *
 
-if len(sys.argv) < 2:
-    print("Compile error : please input node number ")
+if len(sys.argv) < 4:
+    print("Compile error : python main.py [nodeNum] [posX] [posY]")
     exit(1)
 
 FORMAT = pyaudio.paInt16
-# connection
-#clientSocket = socket(AF_INET, SOCK_DGRAM)
-#clientSocket.bind((ADDRESS, PORT))
-# send node info
-# clinetSocket.send(.encode())
+NODE = sys.argv[1]
+posX = sys.argv[2]
+posY = sys.argv[3]
 
+# connection
+clientSocket = socket(AF_INET, SOCK_STREAM)
+try:
+    clientSocket.connect((ADDRESS,PORT))
+except Exception as e:
+    print('cannot connect to the server;', e)
+    exit()
+# open pyaudio
 p = pyaudio.PyAudio()
 stream = p.open(format = FORMAT,
                 channels = CHANNELS,
@@ -95,12 +101,16 @@ while True:
         time = now.strftime('%H:%M:%S:%f')
         print("time: ", time, "result: ", result)
         ### send packet
-
+        message = NODE + ":" + str(result) + ":" + posX + ":" + posY
+        clientSocket.send(message.encode())
+        now = datetime.now()
+        time = now.strftime('%H:%M:%S:%f')
+        print("send socket", time)
     # exception handle
     except KeyboardInterrupt:
         print("wait seconds to terminate...")
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+        clientSocket.close()
         break
-
-stream.stop_stream()
-stream.close()
-p.terminate()
