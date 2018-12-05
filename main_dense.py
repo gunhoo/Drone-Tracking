@@ -2,7 +2,6 @@ import glob
 import sys
 import pyaudio
 import wave
-from datetime import datetime
 import numpy as np
 import tensorflow as tf
 import librosa
