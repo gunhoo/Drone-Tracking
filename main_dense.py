@@ -41,40 +41,34 @@ print("Start recording...")
 while True:
     try:
         # initailize values
-        now = datetime.now()
-        time = now.strftime('%H:%M:%S:%f')
-        print("init", time)
+        printer("Start")
         sess = tf.Session()
         init = tf.global_variables_initializer()
         tf.reset_default_graph()
         sess.run(init)
         frames = []
+
         # recording
         for i in range(0, int(RATE/CHUNK*RECORD_SECONDS)):
             data = stream.read(CHUNK, exception_on_overflow=False)
             frames.append(data)
-        # save stream data
-        now = datetime.now()
-        time = now.strftime('%H:%M:%S:%f')
-        print("record", time)
+        printer("Record")
+        # record/laod wav files
         file_saver(frames, wave, p)
-        # load wav file
         files = glob.glob(path)
         raw_data = load(files)
-        now = datetime.now()
-        time = now.strftime('%H:%M:%S:%f')
-        print("I/O",time)
+        printer("I/O")
+
         # pre-processing
         mfcc_data, y = mfcc4(raw_data, 1)
-        now = datetime.now()
-        time = now.strftime('%H:%M:%S:%f')
-        print("mfcc",time)
+        printer("MFCC")
         X = np.concatenate((mfcc_data), axis=0)
         X = X.reshape(-1, N_MFCC, N_FRAME, CHANNELS)
         X_input = X.reshape(X.shape[0],-1)
-        # dense layer
         X = tf.placeholder(tf.float32, shape=[None,N_MFCC*N_FRAME*CHANNELS])
         keep_prob = tf.placeholder(tf.float32)
+
+        # Dense layer
         logits = dens(X, keep_prob)
         y = np.hstack(y)
         n_labels = y.shape[0]
@@ -84,30 +78,25 @@ while True:
         # cost optimizer needed??? -> time consuming
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
         optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
-        now = datetime.now()
-        time = now.strftime('%H:%M:%S:%f')
-        print("layer",time)
+        printer("layer")
+
         # model saver
         sess = tf.Session()
         saver = tf.train.Saver()
         saver.restore(sess, './model/Dense/dense_model')
-        now = datetime.now()
-        time = now.strftime('%H:%M:%S:%f')
-        print("model saver",time)
+        printer("Model saver")
+
         # prediction
         y_pred = sess.run(tf.argmax(logits,1),feed_dict={X:X_input,keep_prob:1})
         #y_true = sess.run(tf.argmax(y_encoded,1))
         from sklearn.metrics import accuracy_score
         result = "%d" %((accuracy_score(y, y_pred)*100)%100)
-        now = datetime.now()
-        time = now.strftime('%H:%M:%S:%f')
-        print("time: ", time, "result: ", result)
+        printer(result)
+
         ### send packet
         message = NODE + ":" + str(result) + ":" + posX + ":" + posY
         clientSocket.send(message.encode())
-        now = datetime.now()
-        time = now.strftime('%H:%M:%S:%f')
-        print("send socket", time)
+        printer("TCP")
     # exception handle
     except KeyboardInterrupt:
         print("wait seconds to terminate...")

@@ -2,6 +2,7 @@ import pyaudio
 import librosa
 import numpy as np
 import tensorflow as tf
+from datetime import datetime
 ########## Variables ##########
 # Recording Variables
 RECORD_SECONDS = 1
@@ -80,4 +81,8 @@ def dens(X, keep_prob):
     dropout5 = tf.nn.dropout(dense5, keep_prob=keep_prob)
     logits= tf.layers.dense(inputs=dropout5, units=2)
     return logits
+def printer(func):
+    now = datetime.now()
+    time = now.strftime('%H:%M:%S:%f')
+    print(func,"|",time)
 ###############################
