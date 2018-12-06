@@ -15,7 +15,7 @@ N_FRAME = 16
 N_UNIQ_LABELS = 2
 LEARNING_RATE = 0.0002
 # Socket Variables
-ADDRESS = '192.168.123.2'
+ADDRESS = '192.168.123.3'
 PORT = 21535
 path = './second.wav'
 ###############################

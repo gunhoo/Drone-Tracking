@@ -2,6 +2,7 @@ import threading
 from socket import *
 import sys
 from datetime import datetime
+from header import *
 
 if len(sys.argv) < 2:
     print("compile error: please input total node number")
@@ -56,7 +57,7 @@ class ClientThread(threading.Thread):
 
 PORT = 21535
 serverSocket = socket(AF_INET, SOCK_STREAM)
-serverSocket.bind(('192.168.123.2', PORT))
+serverSocket.bind((ADDRESS, PORT))
 
 print("The server is ready to receive on port", PORT)
 
