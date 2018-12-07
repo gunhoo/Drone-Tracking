@@ -20,7 +20,7 @@ posY = sys.argv[3]
 # connection
 clientSocket = socket(AF_INET, SOCK_STREAM)
 try:
-    clientSocket.connect((ADDRESS,PORT))
+    clientSocket.connect(('192.168.123.3',21535))
 except Exception as e:
     print('cannot connect to the server;', e)
     exit()

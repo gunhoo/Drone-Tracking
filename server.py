@@ -21,7 +21,7 @@ class ClientThread(threading.Thread):
         threading.Thread.__init__(self)
         self.csocket = connectionSocket
         self.caddr = clientAddress
-    def cal(self):
+    def cal(self, nodeNum):
         global info, totalNodeNum
         predX = 0
         predY = 0
@@ -34,11 +34,11 @@ class ClientThread(threading.Thread):
             predX = predX / tmp
             predY = predY / tmp
         else:
-            predX = -1
-            predY = -1
+            predX = 'not found'
+            predY = 'not found'
         now = datetime.now()
         time = now.strftime('%H:%M:%S')
-        print(time,": Drone's location: (", predX, ",", predY, ")")
+        print("node",nodeNum,">"time,": Drone's location: (", predX, ",", predY, ")")
     def run(self):
         global info, posX, posY
         print("Client Address", self.caddr[0], "connected.")
@@ -51,7 +51,7 @@ class ClientThread(threading.Thread):
                 posX[nodeNum] = int(modifiedMessage[2])
                 posY[nodeNum] = int(modifiedMessage[3])
                 info[nodeNum] = percentage
-                self.cal()
+                self.cal(nodeNum)
             except KeyboardInterrupt:
                 self.csocket.close()
 
