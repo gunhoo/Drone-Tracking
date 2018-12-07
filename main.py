@@ -72,9 +72,10 @@ while True:
         # CNN layer
         logits = conv(X)
         # cost optimizer needed??? -> time consuming
+        printer("layer")
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
         optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
-        printer("layer")
+        printer("cost-optimizer")
 
         # model saver
         sess = tf.Session()

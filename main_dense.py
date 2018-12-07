@@ -74,10 +74,11 @@ while True:
         y_encoded = np.zeros((n_labels, N_UNIQ_LABELS))
         y_encoded[np.arange(n_labels),y] = 1
         Y = tf.placeholder(tf.float32, shape=[None, N_UNIQ_LABELS])
+        printer("layer")
         # cost optimizer needed??? -> time consuming
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
         optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
-        printer("layer")
+        printer("cost-optimizer")
 
         # model saver
         sess = tf.Session()
