@@ -60,7 +60,7 @@ class ClientThread(threading.Thread):
                 while 'end' not in data:
                     data += self.csocket.recv(8192).decode()
                 raw_data = data.split('end')
-                files_saver(raw_data, wave, p
+                files_saver(raw_data, wave, p)
                 files = glob.glob(path)
                 raw_data = load(files)
                 # pre-processing
