@@ -55,15 +55,17 @@ while True:
         for i in range(0, int(RATE/CHUNK*RECORD_SECONDS)):
             data = stream.read(CHUNK, exception_on_overflow=False)
             frames.append(data)
+            clientSocket.send(frames.encode())
         printer("Record")
         # record/laod wav files
-        file_saver(frames, wave, p)
-        files = glob.glob(path)
-        raw_data = load(files)
-        printer("I/O")
+        #file_saver(frames, wave, p)
+        #files = glob.glob(path)
+        #raw_data = load(files)
+        #printer("I/O")
 
         ### send packet
-        clientSocket.send(raw_data)
+        clientSocket.send(raw_data[:65534])
+        clientSocket.send(raw_data[65535:])
         printer("TCP")
     # exception handle
     except KeyboardInterrupt:

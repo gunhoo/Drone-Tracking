@@ -1,6 +1,9 @@
 import threading
 from socket import *
 import sys
+import pyaudio
+import wave
+import glob
 import tensorflow as tf
 import numpy as np
 from datetime import datetime
@@ -43,15 +46,23 @@ class ClientThread(threading.Thread):
         print(nodeNum,">",time,": Drone's location: (", predX, ",", predY, ")")
     def run(self):
         global info, posX, posY
+        p = pyaudio.PyAudio()
+        #f = open('second.wav','wb')
         print("Client Address", self.caddr[0], "connected.")
         message = self.csocket.recv(1024).decode()
         modifiedMessage = message.split(':')
         nodeNum = int(modifiedMessage[0])
-        posX[nodeNum] = int(modifiedMessage[2])
-        posY[nodeNum] = int(modifiedMessage[3])
+        posX[nodeNum] = int(modifiedMessage[1])
+        posY[nodeNum] = int(modifiedMessage[2])
         while True:
             try:
-                wav = self.csocket.recv(2048)
+                data = self.csocket.recv(8192).decode()
+                while 'end' not in data:
+                    data += self.csocket.recv(8192).decode()
+                raw_data = data.split('end')
+                files_saver(raw_data, wave, p
+                files = glob.glob(path)
+                raw_data = load(files)
                 # pre-processing
                 mfcc_data, y = mfcc4(raw_data, 1)
                 printer("MFCC")
