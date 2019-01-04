@@ -20,7 +20,7 @@ posY = sys.argv[3]
 # connection
 clientSocket = socket(AF_INET, SOCK_STREAM)
 try:
-    clientSocket.connect(('192.168.123.3',21535))
+    clientSocket.connect(('192.168.123.6',21535))
 except Exception as e:
     print('cannot connect to the server;', e)
     exit()
@@ -55,7 +55,7 @@ while True:
         for i in range(0, int(RATE/CHUNK*RECORD_SECONDS)):
             data = stream.read(CHUNK, exception_on_overflow=False)
             frames.append(data)
-            clientSocket.send(frames.encode())
+            clientSocket.send(frames)
         printer("Record")
         # record/laod wav files
         #file_saver(frames, wave, p)
@@ -64,9 +64,9 @@ while True:
         #printer("I/O")
 
         ### send packet
-        clientSocket.send(raw_data[:65534])
-        clientSocket.send(raw_data[65535:])
-        printer("TCP")
+        #clientSocket.send(raw_data[:65534])
+        #clientSocket.send(raw_data[65535:])
+        #printer("TCP")
     # exception handle
     except KeyboardInterrupt:
         print("wait seconds to terminate...")

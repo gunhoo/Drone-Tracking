@@ -56,11 +56,11 @@ class ClientThread(threading.Thread):
         posY[nodeNum] = int(modifiedMessage[2])
         while True:
             try:
-                data = self.csocket.recv(8192).decode()
+                data = self.csocket.recv(8192)
                 while 'end' not in data:
-                    data += self.csocket.recv(8192).decode()
+                    data += self.csocket.recv(8192)
                 raw_data = data.split('end')
-                files_saver(raw_data, wave, p)
+                files_saver(raw_data[0], wave, p)
                 files = glob.glob(path)
                 raw_data = load(files)
                 # pre-processing
