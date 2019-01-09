@@ -42,7 +42,7 @@ class ClientThread(threading.Thread):
             predX = 'not found'
             predY = 'not found'
         now = datetime.now()
-        time = now.strftime('%H:%M:%S')
+        time = now.strftime('%H:%M:%S:%f')
         print("-----",nodeNum,">",time,": Drone's location: (", predX, ",", predY, ")-----")
     def run(self):
         global info, posX, posY
