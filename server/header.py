@@ -17,7 +17,6 @@ LEARNING_RATE = 0.0002
 # Socket Variables
 ADDRESS = '192.168.123.6'
 PORT = 21536
-path = './second.wav'
 ###############################
 
 ########## Functions ##########

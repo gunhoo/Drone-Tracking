@@ -56,18 +56,18 @@ while True:
         # recording
         for i in range(0, int(RATE/CHUNK*RECORD_SECONDS)):
             data = stream.read(CHUNK, exception_on_overflow=False)
-            clientSocket.send(data)
+            frames.append(data)
         printer("Record")
         # record/laod wav files
         fileName = file_saver(str(NODE), frames, wave, p)
-        files = glob.glob(fileName)
-        raw_data = load(files)
-        printer("I/O")
+        #files = glob.glob(fileName)
+        #raw_data = load(files)
+        printer("save")
 
-        # send packet
+        # send file & packet
         os.system('scp '+fileName+' gunhoo@192.168.123.6:~/Desktop/Drone-Tracking/server/')
         clientSocket.send(fileName.encode())
-        printer("TCP")
+        printer("send")
     # exception handle
     except KeyboardInterrupt:
         print("wait seconds to terminate...")
