@@ -26,7 +26,7 @@ try:
     print("start to record the audio.")
 
     frames = []
-    for i in range(0, int(RATE / CHUNK * (RECORD_SECONDS/10))):
+    for i in range(0, int(RATE / CHUNK * RECORD_SECOND)):
         data = stream.read(CHUNK, exception_on_overflow=False)
         frames.append(data)
     
