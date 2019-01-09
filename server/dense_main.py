@@ -2,6 +2,7 @@ import glob
 import sys
 import pyaudio
 import wave
+import os
 import pickle
 import numpy as np
 import tensorflow as tf
@@ -21,7 +22,7 @@ posY = sys.argv[3]
 # connection
 clientSocket = socket(AF_INET, SOCK_STREAM)
 try:
-    clientSocket.connect(('192.168.123.6',21535))
+    clientSocket.connect(('192.168.123.6',21536))
 except Exception as e:
     print('cannot connect to the server;', e)
     exit()
@@ -55,20 +56,18 @@ while True:
         # recording
         for i in range(0, int(RATE/CHUNK*RECORD_SECONDS)):
             data = stream.read(CHUNK, exception_on_overflow=False)
-            #frames.append(data)
-            #packet = pickle.dumps(data)
             clientSocket.send(data)
         printer("Record")
         # record/laod wav files
-        #file_saver(frames, wave, p)
-        #files = glob.glob(path)
-        #raw_data = load(files)
-        #printer("I/O")
+        fileName = file_saver(str(NODE), frames, wave, p)
+        files = glob.glob(fileName)
+        raw_data = load(files)
+        printer("I/O")
 
-        ### send packet
-        #clientSocket.send(raw_data[:65534])
-        #clientSocket.send(raw_data[65535:])
-        #printer("TCP")
+        # send packet
+        os.system('scp '+fileName+' gunhoo@192.168.123.6:~/Desktop/Drone-Tracking/server/')
+        clientSocket.send(fileName.encode())
+        printer("TCP")
     # exception handle
     except KeyboardInterrupt:
         print("wait seconds to terminate...")
@@ -77,3 +76,4 @@ while True:
         p.terminate()
         clientSocket.close()
         break
+

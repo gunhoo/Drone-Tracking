@@ -27,13 +27,17 @@ def load(frames, sr=RATE):
         [array, sr] = librosa.load(f, sr=sr)
         raw = np.hstack((raw, array))
     return raw
-def file_saver(frames, wave, p):
-    wf = wave.open('second.wav', 'wb')
+def file_saver(nodeNum, frames, wave, p):
+    now = datetime.now()
+    time = now.strftime('-%H:%M:%S')
+    fileName = './second-'+nodeNum+time+'.wav'
+    wf = wave.open(fileName, 'wb')
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
     wf.setframerate(RATE)
     wf.writeframes(b''.join(frames))
     wf.close()
+    return fileName
 def mfcc4(raw, label, chunck_size=8192, window_size=4096, sr=RATE, n_mfcc=16, n_frame=16):
     mfcc = np.empty((0, n_mfcc, n_frame))
     y = []
