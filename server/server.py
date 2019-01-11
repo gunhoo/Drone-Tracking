@@ -42,7 +42,7 @@ class ClientThread(threading.Thread):
             predX = 'not found'
             predY = 'not found'
         now = datetime.now()
-        time = now.strftime('%H:%M:%S:%f')
+        time = now.strftime('%H:%M:%S')
         print("-----",nodeNum,">",time,": Drone's location: (", predX, ",", predY, ")-----")
     def run(self):
         global info, posX, posY
@@ -95,7 +95,7 @@ class ClientThread(threading.Thread):
                 y_pred = sess.run(tf.argmax(logits,1),feed_dict={X:X_input,keep_prob:1})
                 #y_true = sess.run(tf.argmax(y_encoded,1))
                 from sklearn.metrics import accuracy_score
-                result = "%d" %((accuracy_score(y, y_pred)*100)%100)
+                result = "%d" %((accuracy_score(y, y_pred)*100)%101)
                 printer(result)
                 info[nodeNum] = result
                 self.cal(nodeNum)
