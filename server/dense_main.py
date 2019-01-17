@@ -65,7 +65,7 @@ while True:
         printer("save")
 
         # send file & packet
-        os.system('scp '+fileName+' gunhoo@192.168.123.6:~/Desktop/Drone-Tracking/server/')
+        os.system('scp '+fileName+' gunhoo@192.168.123.6:~/Desktop/Drone-Tracking/server/test &')
         clientSocket.send(fileName.encode())
         printer("send")
     # exception handle

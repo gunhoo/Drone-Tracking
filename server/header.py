@@ -29,7 +29,7 @@ def load(frames, sr=RATE):
 def file_saver(nodeNum, frames, wave, p):
     now = datetime.now()
     time = now.strftime('-%H:%M:%S')
-    fileName = './second-'+nodeNum+time+'.wav'
+    fileName = './data/second-'+nodeNum+time+'.wav'
     wf = wave.open(fileName, 'wb')
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
