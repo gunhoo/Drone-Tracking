@@ -1,6 +1,7 @@
 import threading
 from socket import *
 import sys
+import os
 import pyaudio
 import wave
 import glob
@@ -60,9 +61,15 @@ class ClientThread(threading.Thread):
                 sess.run(init)
                 printer(str(nodeNum)+">Start")
                 fileName = self.csocket.recv(1024).decode()
+                printer(str(nodeNum)+">socket receive")
+                while not os.path.exists(fileName):
+                    continue
+                while os.path.getsize(fileName)/1024 < 80:
+                    continue
+                printer(str(nodeNum)+">file receive")
                 files = glob.glob(fileName)
                 raw_data = load(files)
-                printer(str(nodeNum)+">Receive")
+                printer(str(nodeNum)+">file load")
                 # pre-processing
                 mfcc_data, y = mfcc4(raw_data, 1)
                 printer(str(nodeNum)+">MFCC")
