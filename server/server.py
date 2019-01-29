@@ -43,7 +43,7 @@ class ClientThread(threading.Thread):
             predX = 'not found'
             predY = 'not found'
         now = datetime.now()
-        time = now.strftime('%H:%M:%S')
+        time = now.strftime('%H:%M:%S:%f')
         print("-----",nodeNum,">",time,": Drone's location: (", predX, ",", predY, ")-----")
     def run(self):
         global info, posX, posY
@@ -59,20 +59,20 @@ class ClientThread(threading.Thread):
                 init = tf.global_variables_initializer()
                 tf.reset_default_graph()
                 sess.run(init)
-                printer(str(nodeNum)+">Start")
+                #printer(str(nodeNum)+">Start")
                 fileName = self.csocket.recv(1024).decode()
-                printer(str(nodeNum)+">socket receive")
+                #printer(str(nodeNum)+">socket receive")
                 while not os.path.exists(fileName):
                     continue
                 while os.path.getsize(fileName)/1024 < 80:
                     continue
-                printer(str(nodeNum)+">file receive")
+                #printer(str(nodeNum)+">file receive")
                 files = glob.glob(fileName)
                 raw_data = load(files)
-                printer(str(nodeNum)+">file load")
+                #printer(str(nodeNum)+">file load")
                 # pre-processing
                 mfcc_data, y = mfcc4(raw_data, 1)
-                printer(str(nodeNum)+">MFCC")
+                #printer(str(nodeNum)+">MFCC")
                 X = np.concatenate((mfcc_data), axis=0)
                 X = X.reshape(-1, N_MFCC, N_FRAME, CHANNELS)
                 X_input = X.reshape(X.shape[0],-1)
@@ -86,24 +86,24 @@ class ClientThread(threading.Thread):
                 y_encoded = np.zeros((n_labels, N_UNIQ_LABELS))
                 y_encoded[np.arange(n_labels),y] = 1
                 Y = tf.placeholder(tf.float32, shape=[None, N_UNIQ_LABELS])
-                printer(str(nodeNum)+">Layer")
+                #printer(str(nodeNum)+">Layer")
                 # cost optimizer needed??? -> time consuming
                 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
                 optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
-                printer(str(nodeNum)+">cost-optimizer")
+                #printer(str(nodeNum)+">cost-optimizer")
 
                 # model saver
                 sess = tf.Session()
                 saver = tf.train.Saver()
                 saver.restore(sess, '../model/Dense/dense_model')
-                printer(str(nodeNum)+">Model saver")
+                #printer(str(nodeNum)+">Model saver")
 
                 # prediction
                 y_pred = sess.run(tf.argmax(logits,1),feed_dict={X:X_input,keep_prob:1})
                 #y_true = sess.run(tf.argmax(y_encoded,1))
                 from sklearn.metrics import accuracy_score
                 result = "%d" %((accuracy_score(y, y_pred)*100)%101)
-                printer(result)
+                #printer(result)
                 info[nodeNum] = result
                 self.cal(nodeNum)
             except KeyboardInterrupt:

@@ -19,6 +19,8 @@ ADDRESS = '192.168.123.6'
 PORT = 21536
 ###############################
 
+prev_t = datetime.now()
+
 ########## Functions ##########
 def load(frames, sr=RATE):
     [raw, sr] = librosa.load(frames[0], sr=sr)
@@ -85,7 +87,10 @@ def dens(X, keep_prob):
     logits= tf.layers.dense(inputs=dropout5, units=2)
     return logits
 def printer(func):
+    global prev_t
     now = datetime.now()
     time = now.strftime('%H:%M:%S:%f')
-    print(func,"|",time)
+    term = now-prev_t
+    prev_t = now
+    print(func,"|",time,"(",term,")")
 ###############################
