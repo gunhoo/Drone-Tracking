@@ -58,10 +58,9 @@ while True:
             data = stream.read(CHUNK, exception_on_overflow=False)
             frames.append(data)
         printer("Record")
-        # record/laod wav files
+        
+        # save wav files
         fileName = file_saver(str(NODE), frames, wave, p)
-        #files = glob.glob(fileName)
-        #raw_data = load(files)
         printer("save")
 
         # send file & packet

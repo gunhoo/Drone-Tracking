@@ -75,18 +75,17 @@ class ClientThread(threading.Thread):
                 mfcc_data, y = mfcc4(raw_data, 1)
                 printer(str(nodeNum)+">MFCC")
                 X = np.concatenate((mfcc_data), axis=0)
-                X = X.reshape(-1, N_MFCC, N_FRAME, CHANNELS)
-                X_input = X.reshape(X.shape[0],-1)
-                X = tf.placeholder(tf.float32, shape=[None,N_MFCC*N_FRAME*CHANNELS])
-                keep_prob = tf.placeholder(tf.float32)
-
-                # Dense layer
-                logits = dens(X, keep_prob)
+                X_input = X.reshape(-1, N_MFCC, N_FRAME, CHANNELS)
                 y = np.hstack(y)
                 n_labels = y.shape[0]
                 y_encoded = np.zeros((n_labels, N_UNIQ_LABELS))
                 y_encoded[np.arange(n_labels),y] = 1
+                X = tf.placeholder(tf.float32, shape=[None,N_MFCC*N_FRAME*CHANNELS])
+                X = tf.reshape(X, [-1, N_MFCC, N_FRAME, CHANNELS])
                 Y = tf.placeholder(tf.float32, shape=[None, N_UNIQ_LABELS])
+
+                # CNN layer
+                logits = conv(X, keep_prob)
                 printer(str(nodeNum)+">Layer")
                 # cost optimizer needed??? -> time consuming
                 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
@@ -96,7 +95,7 @@ class ClientThread(threading.Thread):
                 # model saver
                 sess = tf.Session()
                 saver = tf.train.Saver()
-                saver.restore(sess, '../model/Dense/dense_model')
+                saver.restore(sess, '../model/CNN/cnn_model')
                 printer(str(nodeNum)+">Model saver")
 
                 # prediction
