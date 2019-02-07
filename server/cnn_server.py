@@ -64,7 +64,7 @@ class ClientThread(threading.Thread):
                 printer(str(nodeNum)+">socket receive")
                 while not os.path.exists(fileName):
                     continue
-                while os.path.getsize(fileName)/1024 < 80:
+                while os.path.getsize(fileName)/1024 < 70:
                     continue
                 printer(str(nodeNum)+">file receive")
                 files = glob.glob(fileName)
@@ -83,9 +83,9 @@ class ClientThread(threading.Thread):
                 X = tf.placeholder(tf.float32, shape=[None,N_MFCC*N_FRAME*CHANNELS])
                 X = tf.reshape(X, [-1, N_MFCC, N_FRAME, CHANNELS])
                 Y = tf.placeholder(tf.float32, shape=[None, N_UNIQ_LABELS])
-
+                keep_prob = tf.placeholder(tf.float32)
                 # CNN layer
-                logits = conv(X, keep_prob)
+                logits = conv(X)
                 printer(str(nodeNum)+">Layer")
                 # cost optimizer needed??? -> time consuming
                 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
