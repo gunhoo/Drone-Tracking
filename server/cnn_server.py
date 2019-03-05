@@ -64,7 +64,7 @@ class ClientThread(threading.Thread):
                 printer(str(nodeNum)+">socket receive")
                 while not os.path.exists(fileName):
                     continue
-                while os.path.getsize(fileName)/1024 < 70:
+                while os.path.getsize(fileName)/1024 < 30:
                     continue
                 printer(str(nodeNum)+">file receive")
                 files = glob.glob(fileName)

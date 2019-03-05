@@ -5,7 +5,7 @@ import tensorflow as tf
 from datetime import datetime
 ########## Variables ##########
 # Recording Variables
-RECORD_SECONDS = 1
+RECORD_SECONDS = 0.4
 CHUNK = 8192
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
@@ -30,7 +30,7 @@ def load(frames, sr=RATE):
     return raw
 def file_saver(nodeNum, frames, wave, p):
     now = datetime.now()
-    time = now.strftime('-%H:%M:%S')
+    time = now.strftime('-%H:%M:%S:%f')
     fileName = './data/second-'+nodeNum+time+'.wav'
     wf = wave.open(fileName, 'wb')
     wf.setnchannels(CHANNELS)
