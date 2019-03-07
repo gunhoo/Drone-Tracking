@@ -7,6 +7,7 @@ import pickle
 import numpy as np
 import tensorflow as tf
 import librosa
+from datetime import datetime
 from socket import *
 from header import *
 
@@ -45,6 +46,7 @@ stream = p.open(format = FORMAT,
 print("Start recording...")
 while True:
     try:
+        start_t = datetime.now()
         # initailize values
         printer("Start")
         sess = tf.Session()
@@ -67,6 +69,8 @@ while True:
         os.system('scp '+fileName+' gunhoo@192.168.123.6:~/Desktop/Drone-Tracking/server/data/ &')
         clientSocket.send(fileName.encode())
         printer("send")
+        end_t = datetime.now()
+        print('one cycle : ', end_t - start_t)
     # exception handle
     except KeyboardInterrupt:
         print("wait seconds to terminate...")
