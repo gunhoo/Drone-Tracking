@@ -110,6 +110,7 @@ class ClientThread(threading.Thread):
                     result = "%d" %((accuracy_score(y, y_pred)*100)%101)
                     printer(result)
                     info[nodeNum] = result
+                    print(fileName)
                     self.cal(nodeNum)
                     end_t = datetime.now()
                     print('one cycle : ', end_t - start_t)
