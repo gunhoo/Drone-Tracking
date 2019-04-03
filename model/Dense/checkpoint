@@ -1,2 +1,2 @@
-model_checkpoint_path: "4_dense_model"
-all_model_checkpoint_paths: "4_dense_model"
+model_checkpoint_path: "dense_model"
+all_model_checkpoint_paths: "dense_model"
