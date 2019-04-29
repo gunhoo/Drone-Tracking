@@ -1,1 +1,20 @@
 # Drone-Tracking
+
+## data directory
+drone and background sound data
+
+## model directory
+model files
+
+## notebook directory
+jupyter notebook files
+several CNN, DNN, RNN models which i tested
+
+## rasp based system directory
+embedded system -> node do everything
+The server just calculated with the results of each node
+
+## server directory
+server-assisted system -> server do everything
+Each node only do recording and sending the file
+The server do calculating, ranging, localization, etc.
