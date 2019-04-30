@@ -67,7 +67,7 @@ class ClientThread(threading.Thread):
                     printer(str(nodeNum)+">socket receive")
                     while not os.path.exists(fileName):
                         continue
-                    while os.path.getsize(fileName)/1024 < 200:
+                    while os.path.getsize(fileName)/1024 < 30:
                         continue
                     printer(str(nodeNum)+">file receive")
                     files = glob.glob(fileName)
@@ -75,7 +75,7 @@ class ClientThread(threading.Thread):
                     printer(str(nodeNum)+">file load")
                     
                     # pre-processing
-                    mfcc_data, y_data = mfcc4(raw_data, 0)
+                    mfcc_data, y_data = mfcc4(raw_data,4)
                     print("mfcc",mfcc_data.shape, y_data.shape)
                     printer(str(nodeNum)+">MFCC")
                     X = np.concatenate((mfcc_data), axis=0)
@@ -84,7 +84,7 @@ class ClientThread(threading.Thread):
                     y = np.hstack((y_data))
                     n_labels = y.shape[0]
                     y_encoded = np.zeros((n_labels, N_UNIQ_LABELS))
-                    y_encoded[np.arange(n_labels),y]=1
+                    y_encoded[np.arange(n_labels),y] = 1
 
                     tf.reset_default_graph()
 
@@ -111,7 +111,12 @@ class ClientThread(threading.Thread):
                     y_true = sess.run(tf.argmax(y_encoded,1))
                     from sklearn.metrics import confusion_matrix
                     mat = confusion_matrix(y_true, y_pred)
-                    distance = (mat[0][1]*50+mat[0][2]*20+mat[0][3]*10+mat[0][4]) / (mat[0][0]+mat[0][1]+mat[0][2]+mat[0][3]+mat[0][4])
+                    print(mat)
+                    print(len(mat))
+                    distance = 0
+                    for i in range(1, len(mat)):
+                        distance = distance + mat[0][i]*50/i
+                    #distance = (mat[0][1]*50+mat[0][2]*20+mat[0][3]*10+mat[0][4]) / (mat[0][0]+mat[0][1]+mat[0][2]+mat[0][3]+mat[0][4])
                     printer(distance)
                     info[nodeNum] = distance
                     self.cal(nodeNum)

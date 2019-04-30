@@ -5,7 +5,7 @@ import tensorflow as tf
 from datetime import datetime
 ########## Variables ##########
 # Recording Variables
-RECORD_SECONDS = 10
+RECORD_SECONDS = 1
 CHUNK = 8192
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
@@ -84,7 +84,7 @@ def dens(X, keep_prob):
     dropout4 = tf.nn.dropout(dense4, keep_prob=keep_prob)
     dense5 = tf.layers.dense(inputs=dropout4, units=256, activation=tf.nn.relu)
     dropout5 = tf.nn.dropout(dense5, keep_prob=keep_prob)
-    logits= tf.layers.dense(inputs=dropout5, units=2)
+    logits= tf.layers.dense(inputs=dropout5, units=5)
     return logits
 def printer(func):
     global prev_t
