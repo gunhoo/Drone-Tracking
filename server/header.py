@@ -5,14 +5,14 @@ import tensorflow as tf
 from datetime import datetime
 ########## Variables ##########
 # Recording Variables
-RECORD_SECONDS = 0.4
+RECORD_SECONDS = 10
 CHUNK = 8192
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
 RATE = 22050
 N_MFCC = 16
 N_FRAME = 16
-N_UNIQ_LABELS = 2
+N_UNIQ_LABELS = 5
 LEARNING_RATE = 0.0002
 # Socket Variables
 ADDRESS = '192.168.123.6'
