@@ -67,7 +67,7 @@ class ClientThread(threading.Thread):
                     printer(str(nodeNum)+">socket receive")
                     while not os.path.exists(fileName):
                         continue
-                    while os.path.getsize(fileName)/1024 < 15:
+                    while os.path.getsize(fileName)/1024 < 30:
                         continue
                     printer(str(nodeNum)+">file receive")
                     files = glob.glob(fileName)
@@ -75,21 +75,24 @@ class ClientThread(threading.Thread):
                     printer(str(nodeNum)+">file load")
                     
                     # pre-processing
-                    mfcc_data, y = mfcc4(raw_data, 1)
+                    mfcc_data, y_data = mfcc4(raw_data,1)
+                    print("mfcc",mfcc_data.shape, y_data.shape)
                     printer(str(nodeNum)+">MFCC")
                     X = np.concatenate((mfcc_data), axis=0)
                     X = X.reshape(-1, N_MFCC, N_FRAME, CHANNELS)
-                    X_input = X.reshape(X.shape[0],-1)
-                    X = tf.placeholder(tf.float32, shape=[None,N_MFCC*N_FRAME*CHANNELS])
-                    keep_prob = tf.placeholder(tf.float32)
-                    
-                    # Dense layer
-                    logits = dens(X, keep_prob)
-                    y = np.hstack(y)
+                    X_input = np.reshape(X,(X.shape[0],-1))
+                    y = np.hstack((y_data))
                     n_labels = y.shape[0]
                     y_encoded = np.zeros((n_labels, N_UNIQ_LABELS))
                     y_encoded[np.arange(n_labels),y] = 1
-                    Y = tf.placeholder(tf.float32, shape=[None, N_UNIQ_LABELS])
+
+                    tf.reset_default_graph()
+
+                    X = tf.placeholder(tf.float32, shape=[None,N_MFCC*N_FRAME*CHANNELS])
+                    Y = tf.placeholder(tf.float32, shape=[None,N_UNIQ_LABELS])
+                    keep_prob = tf.placeholder(tf.float32)
+                    # Dense layer
+                    logits = dens(X, keep_prob)
                     printer(str(nodeNum)+">Layer")
                     
                     # cost optimizer needed??? -> time consuming
@@ -111,7 +114,7 @@ class ClientThread(threading.Thread):
                     printer(result)
                     if result < 10:
                         distance = 0
-                    elif result >= 10 && result <20:
+                    elif result >= 10 and result <20:
                         distance = "%d" % (1000 / result )
                     else:
                         # reset model
