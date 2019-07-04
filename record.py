@@ -1,44 +1,55 @@
+import glob
+import sys
 import pyaudio
 import wave
-import sys
+import os
+import pickle
+import numpy as np
+import tensorflow as tf
+import librosa
+from socket import *
+from header import *
 
-if (len(sys.argv) < 3):
-    print('compile example : python3 record.py [record time(s)] [output file name.wav]')
-    sys.exit(0)
+if len(sys.argv) < 3:
+    print("Compile error : python record.py [minutes] [meters]")
+    exit(1)
 
-WAVE_OUTPUT_FILENAME = sys.argv[2]
-RECORD_SECONDS = int(sys.argv[1])
-CHUNK = 8192
 FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
+NODE = sys.argv[2]
+seconds = int(sys.argv[1])
 
+#send node info
+
+# open pyaudio
 p = pyaudio.PyAudio()
-cnt = 0;
-try:
-    stream = p.open(format = FORMAT,
-                    channels = CHANNELS,
-                    rate = RATE,
-                    input = True,
-                    frames_per_buffer = CHUNK
-                    )
+stream = p.open(format = FORMAT,
+                channels = CHANNELS,
+                rate = RATE,
+                input = True,frames_per_buffer = CHUNK,
+                #input_device_index = 0,
+                #output_device_index = 0)
+                )
 
-    print("start to record the audio.")
+# start loop
+print("Start recording...")
+loop = 0
+while loop < seconds:
+    try:
+        loop = loop+1
+        frames = []
+        # recording
+        for i in range(0, int(RATE/CHUNK*RECORD_SECONDS)):
+            data = stream.read(CHUNK, exception_on_overflow=False)
+            frames.append(data)
+        # record/laod wav files
+        fileName = file_saver(str(NODE), frames, wave, p)
+        # send file & packet
+        os.system('scp '+fileName+' gunhoo@192.168.123.6:~/Desktop/Drone-Tracking/server/data/ &')
+    # exception handle
+    except KeyboardInterrupt:
+        print("wait seconds to terminate...")
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+        break
 
-    frames = []
-    for i in range(0, int(RATE / CHUNK * RECORD_SECOND)):
-        data = stream.read(CHUNK, exception_on_overflow=False)
-        frames.append(data)
-    
-    print("Recording finished.")
-except:
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
-
-wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-wf.setnchannels(CHANNELS)
-wf.setsampwidth(p.get_sample_size(FORMAT))
-wf.setframerate(RATE)
-wf.writeframes(b''.join(frames))
-wf.close()
