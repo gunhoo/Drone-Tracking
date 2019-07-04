@@ -1,5 +1,5 @@
 # Drone-Tracking
-As part of this project, I wrote an acm mobisys poster, and the poster is copyrighted by ACM.  
+As part of this project, I wrote an acm mobisys poster, and the poster is ***copyrighted by*** **ACM**.  
 
 https://doi.org/10.1145/3307334.3328613  
 https://dl.acm.org/citation.cfm?doid=3307334.3328613  
