@@ -1,8 +1,8 @@
 # Drone-Tracking
 As part of this project, I wrote an acm mobisys poster, and the poster is ***copyrighted by*** **ACM**.  
-
 https://doi.org/10.1145/3307334.3328613  
-https://dl.acm.org/citation.cfm?doid=3307334.3328613  
+https://dl.acm.org/citation.cfm?doid=3307334.3328613    
+Copyright ⓒ 2019 by Gunhoo Park (www.github.com/gunhoo). All rights reserved. 무단 전재 및 재배포 금지
 
 
 ## data directory
