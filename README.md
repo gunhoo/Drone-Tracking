@@ -2,7 +2,7 @@
 Paper : 
 https://doi.org/10.1145/3307334.3328613  and
 https://dl.acm.org/citation.cfm?doid=3307334.3328613   
-As part of this project, I wrote a poster at ACM MobiSys 2019 Poster Section, and the poster is ***copyrighted by*** **ACM**.  
+As part of this project, I wrote a poster at ACM MobiSys 2019 Poster Section.  
 The ACM Digital Library is published by the Association for Computing Machinery. Copyright © 2019 ACM, Inc.  
 
 Poster : 
