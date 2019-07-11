@@ -4,7 +4,7 @@ Paper :
 https://doi.org/10.1145/3307334.3328613  and
 https://dl.acm.org/citation.cfm?doid=3307334.3328613   
 Poster : 
-[adr-mobisys2019-poster.pdf](https://github.com/gunhoo/Drone-Tracking/files/3379920/adr-mobisys2019-poster.pdf)  
+[PDF file](https://github.com/gunhoo/Drone-Tracking/files/3379920/adr-mobisys2019-poster.pdf)  
 Copyright ⓒ 2019 by Gunhoo Park (www.github.com/gunhoo). All rights reserved. 무단 전재 및 재배포 금지
 
 
